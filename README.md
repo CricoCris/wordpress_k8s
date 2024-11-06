@@ -15,3 +15,4 @@ UPDATE wp_users SET user_pass = MD5('[SENHA]') WHERE user_login = '[USER]';
 
 aws ecr get-login-password --region sa-east-1 | sudo docker login --username AWS --password-stdin 843799923522.dkr.ecr.sa-east-1.amazonaws.com
 
+# wordpress_k8s
