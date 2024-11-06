@@ -1,0 +1,66 @@
+{{- if .Values.wordpress.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-service-{{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: {{ .Values.wordpress.ports.servicePort }}
+    targetPort: {{ .Values.wordpress.ports.targetPort }}
+  selector:
+    app: wordpress-{{ .Values.namespace.name }}
+{{- end }}
+
+{{- if .Values.mysql.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-service-{{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  selector:
+    app: mysql-{{ .Values.namespace.name }}
+  ports:
+  - protocol: TCP
+    port: {{ .Values.mysql.service.port }}
+    targetPort: {{ .Values.mysql.service.targetPort }}
+  type: ClusterIP
+{{- end }}
+
+{{- if .Values.sftp.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sftp-service-{{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 22
+    targetPort: 22
+  selector:
+    app: sftp-{{ .Values.namespace.name }}
+{{- end }}
+
+{{- if .Values.phpaMyAmin.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpmyadmin-service-{{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  selector:
+    app: phpmyadmin-{{ .Values.namespace.name }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80      
+  type: ClusterIP
+{{- end }}

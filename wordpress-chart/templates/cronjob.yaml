@@ -1,0 +1,57 @@
+{{- if .Values.crawler.enabled }}
+---
+
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cronjob-crawler-pechinchou
+  namespace: {{ .Values.namespace.name }}
+spec:
+  schedule: "*/30 * * * *" # A cada 10 minutos
+  jobTemplate:
+    spec:
+      template:
+        spec:          
+          containers:
+          - name: crawler-container
+            image: node:14-alpine            
+            command: ["sh", "-c", "node /crawler/pechinchou/src/index.js "]            
+            volumeMounts:
+            - name: script-volume
+              mountPath: /crawler
+            - name: wordpress-volume
+              mountPath: /wordpress  
+          restartPolicy: OnFailure
+          volumes:
+          - name: script-volume
+            persistentVolumeClaim:
+              claimName: crawler-pvc  # Substitua pelo nome do seu PVC
+          - name: wordpress-volume
+            persistentVolumeClaim:
+              claimName: wordpress-pvc   # Substitua pelo nome do seu PVC
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cronjob-crawler-promobit
+  namespace: {{ .Values.namespace.name }}
+spec:
+  schedule: "* 1 * * *" # A cada 30 minutos
+  jobTemplate:
+    spec:
+      template:
+        spec:          
+          containers:
+          - name: crawler-container
+            image: node:18-alpine            
+            command: ["sh", "-c", "node /crawler/promobit/index.js > /crawler/promobit/log/crawler-promobit.log 2>/crawler/promobit/log/crawler-promobit.error"]            
+            volumeMounts:
+            - name: script-volume
+              mountPath: /crawler
+          restartPolicy: OnFailure
+          volumes:
+          - name: script-volume
+            persistentVolumeClaim:
+              claimName: crawler-pvc
+{{- end }}

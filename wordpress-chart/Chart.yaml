@@ -1,0 +1,8 @@
+# wordpress-chart/Chart.yaml
+apiVersion: v2
+name: wordpress
+description: A Helm chart for deploying WordPress and MySQL on Kubernetes
+type: application
+version: 0.1.0
+appVersion: "5.9-php7.4"
+icon: https://tabaratasso.com.br/wp-content/uploads/2020/10/Logo-2.png  # Substitua pela URL do ícone desejado

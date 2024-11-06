@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql-statefullset-{{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  serviceName: "mysql"
+  replicas: {{ .Values.mysql.replicas }}
+  selector:
+    matchLabels:
+      app: mysql-{{ .Values.namespace.name }}
+  template:
+    metadata:
+      labels:
+        app: mysql-{{ .Values.namespace.name }}
+    spec:
+      containers:
+        - name: mysql-{{ .Values.namespace.name }}
+          image: {{ .Values.mysql.image }}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mysql.secretName }}-{{ .Values.namespace.name }}
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mysql.secretName }}-{{ .Values.namespace.name }}
+                  key: MYSQL_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mysql.secretName }}-{{ .Values.namespace.name }}
+                  key: MYSQL_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mysql.secretName }}-{{ .Values.namespace.name }}
+                  key: MYSQL_PASSWORD
+            - name: MYSQL_TCP_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.mysql.secretName }}-{{ .Values.namespace.name }}
+                  key: MYSQL_TCP_PORT
+          ports:
+            - containerPort: {{ .Values.mysql.service.port }}
+          resources:
+            requests:
+              memory: "{{ .Values.mysql.resources.requests.memory }}"
+              cpu: "{{ .Values.mysql.resources.requests.cpu }}"
+            limits:
+              memory: "{{ .Values.mysql.resources.limits.memory }}"
+              cpu: "{{ .Values.mysql.resources.limits.cpu }}"
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: {{ .Values.mysql.volumes.size }}
+        storageClassName: mysql-storageclass-{{ .Values.namespace.name }}

@@ -1,0 +1,10 @@
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: ingress-nginx  # Substitua pelo namespace correto do seu Ingress Controller
+data:
+  22: "tabaratasso/sftp-service:22"  # Formato: "porta_externa: 'namespace/nome-do-service:porta-interna'"
+  59001: "tabaratasso/mysql:59001"  # Formato: "porta_externa: 'namespace/nome-do-service:porta-interna'"

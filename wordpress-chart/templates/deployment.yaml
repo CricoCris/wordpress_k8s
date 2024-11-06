@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-deployment-{{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.name }}
+spec:
+  replicas: {{ .Values.wordpress.replicas }}
+  selector:
+    matchLabels:
+      app: wordpress-{{ .Values.namespace.name }}
+  template:
+    metadata:
+      labels:
+        app: wordpress-{{ .Values.namespace.name }}
+    spec:
+      volumes:
+        {{- if .Values.wordpress.persistentVolumes.enabled }}
+        {{- range .Values.wordpress.persistentVolumes.volumes }}
+        - name: {{ .name }}
+          persistentVolumeClaim:
+            claimName: {{ .name }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.wordpress.storageClass.enabled }}
+        - name: wordpress-data
+          persistentVolumeClaim:
+            claimName: wordpress-pvc
+        {{- if .Values.crawler.enabled }}
+        - name: crawler-data
+          persistentVolumeClaim:
+            claimName: crawler-pvc            
+        {{- end }}
+        {{- end }}
+        - name: config-volume
+          configMap:
+            name: wordpress-config
+      containers:
+      - name: wordpress-{{ .Values.namespace.name }}
+        image: {{ .Values.wordpress.image }}
+        ports:
+        - containerPort: {{ .Values.wordpress.ports.containerPort }}
+        envFrom:
+        - configMapRef:
+            name: wordpress-config
+        volumeMounts:
+        {{- if .Values.wordpress.persistentVolumes.enabled }}
+        {{- range .Values.wordpress.persistentVolumes.volumes }}
+        - name: {{ .name }}
+          mountPath: {{ .mountPath }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.wordpress.storageClass.enabled }}            
+        - name: wordpress-data
+          mountPath: /var/www/html
+        {{- if .Values.crawler.enabled }}
+        - name: crawler-data
+          mountPath: /crawler
+        {{- end }}
+        {{- end }}             
+        resources:
+          requests:
+            memory: "{{ .Values.wordpress.resources.requests.memory }}"
+            cpu: "{{ .Values.wordpress.resources.requests.cpu }}"
+          limits:
+            memory: "{{ .Values.wordpress.resources.limits.memory }}"
+            cpu: "{{ .Values.wordpress.resources.limits.cpu }}"
+
+{{- if .Values.sftp.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sftp-deployment-{{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: sftp-{{ .Values.namespace.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sftp-{{ .Values.namespace.name }}
+  template:
+    metadata:
+      labels:
+        app: sftp-{{ .Values.namespace.name }}
+    spec:
+      containers:
+      - name: sftp-{{ .Values.namespace.name }}
+        image: zhabba/sftp-arm64:latest
+        ports:
+        - containerPort: 22
+        args:
+        - "$(SFTP_CREDENTIALS)"
+        env:
+        - name: SFTP_CREDENTIALS
+          valueFrom:
+            secretKeyRef:
+              name: sftp-secret-{{ .Values.namespace.name }}
+              key: sftp-credentials
+        volumeMounts:
+        - name: crawler-data
+          mountPath: /home/sftp/upload/crawler        
+        - name: wordpress-data
+          mountPath: /home/sftp/upload/wordpress
+      volumes:
+      - name: crawler-data
+        persistentVolumeClaim:
+          claimName: crawler-pvc     
+      - name: wordpress-data
+        persistentVolumeClaim:
+          claimName: wordpress-pvc
+{{- end }}

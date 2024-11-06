@@ -1,0 +1,5 @@
+# wordpress-chart/.helmignore
+.git/
+.gitignore
+README.md
+values.yaml

@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wordpress-config
+  namespace: avisadesconto
+data:
+  WORDPRESS_DB_HOST: "mysql:59001"
+  WORDPRESS_DB_USER: "root"
+  WORDPRESS_DB_PASSWORD: "avis4@1020!"
+  WORDPRESS_DB_NAME: "avisadesconto"
+  WORDPRESS_CONFIG_EXTRA: |
+    define('WP_SITE_URL', 'http://hml.avisadesconto.com.br/');
+    define('WP_HOME', 'http://hml.avisadesconto.com.br/');
+    define('FORCE_SSL_ADMIN', true);
+    if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
+      $_SERVER['HTTPS'] = 'on';
+    }
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-deployment
+  namespace: avisadesconto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      volumes:
+        - name: wordpress-data
+          persistentVolumeClaim:
+            claimName: wordpress-pvc
+        - name: crawler-data
+          persistentVolumeClaim:
+            claimName: crawler-pvc
+        - name: config-volume
+          configMap:
+            name: wordpress-config
+      containers:
+      - name: wordpress
+        image: wordpress:5.9-php7.4
+        ports:
+        - containerPort: 80
+        envFrom:
+        - configMapRef:
+            name: wordpress-config
+        volumeMounts:            
+        - name: wordpress-data
+          mountPath: /var/www/html/
+        - name: crawler-data
+          mountPath: /crawler             
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "200m"
+          limits:
+            memory: "512Mi"
+            cpu: "400m"
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-service
+  namespace: avisadesconto
+spec:
+  type: ClusterIP
+  ports:
+  - protocol: TCP
+    port: 50001
+    targetPort: 80
+  selector:
+    app: wordpress
+
+---
+
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wordpress-ingress
+  namespace: avisadesconto
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt"
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - "hml.avisadesconto.com.br"
+    secretName: "wordpress-tls"
+  rules:
+    - host: "hml.avisadesconto.com.br"
+      http:
+        paths:
+        - path: "/"
+          pathType: Prefix
+          backend:
+            service:
+              name: wordpress-service
+              port:
+                number: 50001

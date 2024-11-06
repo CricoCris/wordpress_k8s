@@ -1,0 +1,53 @@
+{{- if .Values.phpaMyAmin.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: phpmyadmin-deployment-{{ .Values.namespace.name }}
+  namespace: {{ .Values.namespace.name }}
+  labels:
+    app: phpmyadmin-{{ .Values.namespace.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: phpmyadmin-{{ .Values.namespace.name }}
+  template:
+    metadata:
+      labels:
+        app: phpmyadmin-{{ .Values.namespace.name }}
+    spec:
+      containers:
+        - name: phpmyadmin-{{ .Values.namespace.name }}
+          image: phpmyadmin:latest
+          env:
+            - name: PMA_ABSOLUTE_URI
+              value: "https://mysql.{{ .Values.namespace.name }}.com.br/"
+            - name: PMA_HOST
+              value: "mysql-service-{{ .Values.namespace.name }}:{{ .Values.mysql.service.port }}"
+          ports:
+            - containerPort: 80
+          resources:
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          volumeMounts:
+            - name: phpmyadmin-logs
+              mountPath: /var/log/phpmyadmin
+      restartPolicy: Always
+      volumes:
+        - name: phpmyadmin-logs
+          emptyDir: {}
+      terminationGracePeriodSeconds: 30
+{{- end }}

@@ -1,0 +1,38 @@
+{{- if .Values.hml.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wordpress-config
+  namespace: {{ .Values.namespace.name }}
+data:
+  WORDPRESS_DB_HOST: "{{ .Values.wordpress.db.host }}"
+  WORDPRESS_DB_USER: "{{ .Values.wordpress.db.user }}"
+  WORDPRESS_DB_PASSWORD: "{{ .Values.wordpress.db.password }}"
+  WORDPRESS_DB_NAME: "{{ .Values.wordpress.db.name }}"
+  WORDPRESS_CONFIG_EXTRA: |
+    define('WP_SITE_URL', 'http://hml.{{ .Values.namespace.name }}.com.br/');
+    define('WP_HOME', 'http://hml.{{ .Values.namespace.name }}.com.br/');
+    define('FORCE_SSL_ADMIN', true);
+    if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
+      $_SERVER['HTTPS'] = 'on';
+    }
+
+{{- else }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wordpress-config
+  namespace: {{ .Values.namespace.name }}
+data:
+  WORDPRESS_DB_HOST: {{ .Values.wordpress.db.host }}
+  WORDPRESS_DB_USER: {{ .Values.wordpress.db.user }}
+  WORDPRESS_DB_PASSWORD: {{ .Values.wordpress.db.password }}
+  WORDPRESS_DB_NAME: {{ .Values.wordpress.db.name }}
+  WORDPRESS_CONFIG_EXTRA: |
+    define('WP_SITE_URL', 'http://{{ .Values.namespace.name }}.com.br/');
+    define('WP_HOME', 'http://{{ .Values.namespace.name }}.com.br/');
+    define('FORCE_SSL_ADMIN', true);
+    if (strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) {
+      $_SERVER['HTTPS'] = 'on';
+    }
+{{- end }}

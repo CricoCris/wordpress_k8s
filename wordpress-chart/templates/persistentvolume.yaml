@@ -1,0 +1,37 @@
+{{- $namespace := .Values.namespace.name }}
+{{- if .Values.wordpress.persistentVolumes.enabled }}
+{{- range .Values.wordpress.persistentVolumes.volumes }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .name }}-pv
+  namespace: {{ $namespace }}
+spec:
+  capacity:
+    storage: {{ .storage }}
+  accessModes:
+    - {{ .accessMode }}
+  hostPath:
+    path: {{ .hostPath }}/pv-{{ $namespace }}
+---
+{{- end }}
+{{- end }}
+
+{{- if .Values.wordpress.persistentVolumes.enabled }}
+{{- if .Values.crawler.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: crawler-node-pv-{{ .Values.namespace.name }}  
+  labels:
+    type: crawler-{{ .Values.namespace.name }}
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /mnt/data/crawler-node-{{ .Values.namespace.name }}
+{{- end }}
+{{- end }}

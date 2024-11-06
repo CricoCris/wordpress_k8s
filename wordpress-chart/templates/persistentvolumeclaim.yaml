@@ -1,0 +1,73 @@
+{{- $namespace := .Values.namespace.name }}
+{{- if .Values.wordpress.persistentVolumes.enabled }}
+{{- range .Values.wordpress.persistentVolumes.volumes }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .name }}-pvc
+  namespace: {{ $namespace }}
+spec:
+  accessModes:
+    - {{ .accessMode }}
+  resources:
+    requests:
+      storage: {{ .storage }}
+---
+{{- end }}
+{{- end }}
+
+{{- if .Values.wordpress.storageClass.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wordpress-pvc
+  namespace: {{ .Values.namespace.name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.wordpress.storageClass.size }}
+  storageClassName: wp-storageclass-{{ .Values.namespace.name }}  # Referencia o StorageClass criado para EBS
+{{- end }}
+
+{{- if .Values.wordpress.storageClass.enabled }}
+{{- if .Values.crawler.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: crawler-pvc
+  namespace: {{ .Values.namespace.name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  storageClassName: wp-storageclass-{{ .Values.namespace.name }}  # Referencia o StorageClass criado para EBS
+{{- end }}
+{{- end }}
+
+
+
+{{- if .Values.wordpress.persistentVolumes.enabled }}
+{{- if .Values.crawler.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: crawler-node-pvc
+  namespace: {{ .Values.namespace.name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchLabels:
+      type: crawler-{{ .Values.namespace.name }}
+{{- end }}
+{{- end }}

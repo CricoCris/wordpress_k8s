@@ -1,0 +1,74 @@
+namespace:
+  name: avisadesconto
+
+hml:
+  enabled: false
+
+sftp:
+  enabled: true
+
+crawler:
+  enabled: true
+
+phpaMyAmin:
+  enabled: true
+
+wordpress:
+  enabled: true
+  name: wordpress
+  image: wordpress:5.9-php7.4
+  replicas: 1
+  db:
+    host: "mysql-service-avisadesconto:59002"
+    user: root
+    password: "avis4@1020!"
+    name: "avisadesconto"
+  ports:
+    servicePort: 50001
+    targetPort: 80
+    containerPort: 80
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "400m"
+  persistentVolumes:
+    enabled: false
+    volumes:
+      - name: script-volume
+        storage: 1Gi
+        accessMode: ReadWriteOnce
+        hostPath: /mnt/data/
+        mountPath: /localvolume     
+  storageClass:
+    enabled: true
+    size: 20Gi
+    fsType: ext4
+
+mysql:
+  enabled: true
+  image: biarms/mysql:5.7
+  replicas: 1
+  secretName: mysql-secret
+  service:
+    port: 59002
+    targetPort: 3306
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "400m"
+  volumes:
+    storageClassName: mysql-wp
+    size: 5Gi
+    fsType: xfs  
+  secrets:
+    MYSQL_ROOT_PASSWORD: YXZpczRAMTAyMCE=
+    MYSQL_DATABASE: YXZpc2FkZXNjb250bw==
+    MYSQL_USER: YXZpc2FkZXNjb250bw==
+    MYSQL_PASSWORD: YXZpczRAMTAyMEA=
+    MYSQL_TCP_PORT: NTkwMDI=
