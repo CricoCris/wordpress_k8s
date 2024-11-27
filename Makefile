@@ -1,7 +1,7 @@
 
 # Nome da aplicação e namespace(IMPORTANTE!!!!)
-APP_NAME=maodevakinha
-NAMESPACE=maodevakinha
+APP_NAME=tanodescontinho
+NAMESPACE=tanodescontinho
 
 #Se for testar como homologação primeiro(totalmente recomendado) true or false apenas. Cuidado com espaços! Habilitar teste servidor(true)
 ENABLE_HML=false
@@ -13,22 +13,22 @@ KEYDIR="~/.ssh/id_rsa"
 
 #wordpress
 LABELWP=app=wordpress-$(NAMESPACE)
-CONTENT_NAME=maodevakinha.tar.gz
+CONTENT_NAME=tanodescontinho.tar.gz
 CONTENT_CRAWLER_NAME=crawlers_descontador.tar.gz
 CONTENT_DIR=../vagalume_dados/
 
-#ftp([USER]:[PASS][PERFIL]) Porta 22022 ate 22032 (22022 tabaratasso - 22023 avisadesconto - 22024 maodevakinha)
-FTP_CREDENCIALS=sftp:@Mvak020:33
-FTP_PORT=22026
+#ftp([USER]:[PASS][PERFIL]) Porta 22022 ate 22032 (22022 tabaratasso - 22023 avisadesconto - 22024 tanodescontinho)
+FTP_CREDENCIALS=sftp:T@c0m120:33
+FTP_PORT=22028
 
 #bancode dados
 #Obs: O de prefência não usar "#" na senha. Se for necessário colocar "" antes do caractere(o "" não fara parte da senha. Ex: ABC123#$% --> a senha seria ABC123#$% ).
-MYSQL_ROOT_PASSWORD="M@0V4@1020!"
-MYSQL_DATABASE="maodevakinha"
-MYSQL_USER="maodevakinha"
-MYSQL_PASSWORD="MV@k1@1020"
-MYSQL_TCP_PORT=59006# NAO INSERIR ASPAS NEM DEIXAR ESPAÇOS ANTES DO COMENTARIO!!!!
-DB_PRINCIPAL_FILE=maodevakinha_wp.sql
+MYSQL_ROOT_PASSWORD="T@c0m@1020!"
+MYSQL_DATABASE="tanodescontinho"
+MYSQL_USER="tanodescontinho"
+MYSQL_PASSWORD="T@c0m@1020"
+MYSQL_TCP_PORT=59008# NAO INSERIR ASPAS NEM DEIXAR ESPAÇOS ANTES DO COMENTARIO!!!!
+DB_PRINCIPAL_FILE=tanodescontinho_wp.sql
 DB_SHORT_FILE=short_generic.sql
 
 
@@ -103,7 +103,7 @@ update-ports:
 	sleep 3
 
 #instalacao completa(único passo)
-fullinstall: update-ingress helmapply deploydb
+fullinstall: update-ingress helmapply copycrawler deploydb 
 
 partinstall: copydataandcrawler
 
@@ -147,6 +147,8 @@ copydata: copy-tar descompress-tar
 
 copydataandcrawler:  copy-tar descompress-tar copy-crawlers-tar descompress-crawlers-tar
 
+copycrawler:  copy-crawlers-tar descompress-crawlers-tar
+
 copydatafull: compress-tar copy-tar descompress-tar
 
 #comando para esperar 15 segundos que o wordpress esteja disponível e iniciar a cópia
@@ -181,14 +183,16 @@ descompress-tar: getpod
 	kubectl exec -n $(NAMESPACE) -i $(PODWP) -- bash -c /var/www/html/script.sh
 # 	kubectl exec -n $(NAMESPACE) $(PODWP) -- bash -c  cp -p /var/www/html/htaccessORIGINAL /var/www/html/.htaccess
 
+descompress-crawlers-tar: getpod
+	@echo "Extraindo arquivos crawler no pod $(PODWP) (pode levar muito tempo...)"
+	kubectl exec -n $(NAMESPACE) $(PODWP) -- tar -xzvf /crawler/$(CONTENT_CRAWLER_NAME) -C /crawler && kubectl exec -n $(NAMESPACE) $(PODWP) -- rm /crawler/$(CONTENT_CRAWLER_NAME)
+
 testemv: getpod
 	kubectl cp script.sh $(PODWP):/var/www/html/ -n $(NAMESPACE)
 	kubectl exec -n $(NAMESPACE) -i $(PODWP) -- bash -c /var/www/html/script.sh
 
 
-descompress-crawlers-tar: getpod
-	@echo "Descomprimindo arquivos crawlers no pod $(PODWP)"
-	kubectl exec -n $(NAMESPACE) $(PODWP) -- tar -xzvf /crawler/$(CONTENT_CRAWLER_NAME) -C /crawler && kubectl exec -n $(NAMESPACE) $(PODWP) -- rm /crawler/$(CONTENT_CRAWLER_NAME)
+
 	
 
 #########################

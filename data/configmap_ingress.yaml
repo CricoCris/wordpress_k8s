@@ -13,4 +13,8 @@ data:
   "59004": achadasso/mysql-service-achadasso:59004  
   "22026": maodevakinha/sftp-service-maodevakinha:22
   "59006": maodevakinha/mysql-service-maodevakinha:59006
+  "22027": ofertasdamilli/sftp-service-ofertasdamilli:22
+  "59007": ofertasdamilli/mysql-service-ofertasdamilli:59007  
+  "22028": tanodescontinho/sftp-service-tanodescontinho:22
+  "59008": tanodescontinho/mysql-service-tanodescontinho:59008
   "59002": avisadesconto/mysql-service-avisadesconto:59002
