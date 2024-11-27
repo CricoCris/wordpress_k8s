@@ -16,7 +16,8 @@ spec:
     - "{{ .Values.namespace.name }}.com.br"
   {{- end }}
   {{- if not .Values.hml.enabled }}
-    - "www.{{ .Values.namespace.name }}.com.br
+    - "www.{{ .Values.namespace.name }}.com.br"
+  {{- end }}
     secretName: "wordpress-tls-{{ .Values.namespace.name }}"
   rules:
       {{- if .Values.hml.enabled }}

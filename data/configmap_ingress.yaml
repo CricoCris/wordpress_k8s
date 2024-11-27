@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tcp-services
+  namespace: ingress-nginx
+data:
+  "22022": tabaratasso/sftp-service-tabaratasso:22
+  "22023": avisadesconto/sftp-service-avisadesconto:22
+  "59001": tabaratasso/mysql:59001
+  "22025": descontador/sftp-service-descontador:22  
+  "59005": descontador/mysql-service-descontador:59005
+  "22024": achadasso/sftp-service-achadasso:22
+  "59004": achadasso/mysql-service-achadasso:59004  
+  "22026": maodevakinha/sftp-service-maodevakinha:22
+  "59006": maodevakinha/mysql-service-maodevakinha:59006
+  "59002": avisadesconto/mysql-service-avisadesconto:59002

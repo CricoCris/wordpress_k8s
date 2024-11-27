@@ -1,5 +1,5 @@
 namespace:
-  name: achadasso
+  name: maodevakinha
 
 hml:
   enabled: false
@@ -22,10 +22,10 @@ wordpress:
   image: wordpress:5.9-php7.4
   replicas: 1
   db:
-    host: "mysql-service-achadasso:59004"
+    host: "mysql-service-maodevakinha:59006"
     user: root
-    password: "ach4da@1020!"
-    name: "achadasso_wp"
+    password: "M@0V4@1020!"
+    name: "maodevakinha"
   ports:
     servicePort: 50001
     targetPort: 80
@@ -33,10 +33,10 @@ wordpress:
   resources:
     requests:
       memory: "256Mi"
-      cpu: "200m"
+      cpu: "100m"
     limits:
       memory: "512Mi"
-      cpu: "400m"
+      cpu: "200m"
   persistentVolumes:
     enabled: false
     volumes:
@@ -56,7 +56,7 @@ mysql:
   replicas: 1
   secretName: mysql-secret
   service:
-    port: 59004
+    port: 59006
     targetPort: 3306
   resources:
     requests:
@@ -70,8 +70,8 @@ mysql:
     size: 5Gi
     fsType: xfs  
   secrets:
-    MYSQL_ROOT_PASSWORD: YWNoNGRhQDEwMjAh
-    MYSQL_DATABASE: YWNoYWRhc3NvX3dw
-    MYSQL_USER: YWNoYWRhc3Nv
-    MYSQL_PASSWORD: YWNoNEAxMDIwQA==
-    MYSQL_TCP_PORT: NTkwMDQ=
+    MYSQL_ROOT_PASSWORD: TUAwVjRAMTAyMCE=
+    MYSQL_DATABASE: bWFvZGV2YWtpbmhh
+    MYSQL_USER: bWFvZGV2YWtpbmhh
+    MYSQL_PASSWORD: TVZAazFAMTAyMA==
+    MYSQL_TCP_PORT: NTkwMDY=

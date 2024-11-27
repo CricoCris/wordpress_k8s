@@ -1,7 +1,7 @@
 
 # Nome da aplicação e namespace(IMPORTANTE!!!!)
-APP_NAME=achadasso
-NAMESPACE=achadasso
+APP_NAME=maodevakinha
+NAMESPACE=maodevakinha
 
 #Se for testar como homologação primeiro(totalmente recomendado) true or false apenas. Cuidado com espaços! Habilitar teste servidor(true)
 ENABLE_HML=false
@@ -13,23 +13,23 @@ KEYDIR="~/.ssh/id_rsa"
 
 #wordpress
 LABELWP=app=wordpress-$(NAMESPACE)
-CONTENT_NAME=achadasso.tar.gz
+CONTENT_NAME=maodevakinha.tar.gz
 CONTENT_CRAWLER_NAME=crawlers_descontador.tar.gz
-CONTENT_DIR=./data
+CONTENT_DIR=../vagalume_dados/
 
-#ftp([USER]:[PASS][PERFIL]) Porta 22022 ate 22032 (22022 tabaratasso - 22023 avisadesconto - 22024 achadasso)
-FTP_CREDENCIALS=sftp:@acha1020:33
-FTP_PORT=22024
+#ftp([USER]:[PASS][PERFIL]) Porta 22022 ate 22032 (22022 tabaratasso - 22023 avisadesconto - 22024 maodevakinha)
+FTP_CREDENCIALS=sftp:@Mvak020:33
+FTP_PORT=22026
 
 #bancode dados
 #Obs: O de prefência não usar "#" na senha. Se for necessário colocar "" antes do caractere(o "" não fara parte da senha. Ex: ABC123#$% --> a senha seria ABC123#$% ).
-MYSQL_ROOT_PASSWORD="ach4da@1020!"
-MYSQL_DATABASE="achadasso_wp"
-MYSQL_USER="achadasso"
-MYSQL_PASSWORD="ach4@1020@"
-MYSQL_TCP_PORT=59004# NAO INSERIR ASPAS NEM DEIXAR ESPAÇOS ANTES DO COMENTARIO!!!!
-DB_PRINCIPAL_FILE=achadasso_wp.sql
-DB_SHORT_FILE=short_achadasso.sql
+MYSQL_ROOT_PASSWORD="M@0V4@1020!"
+MYSQL_DATABASE="maodevakinha"
+MYSQL_USER="maodevakinha"
+MYSQL_PASSWORD="MV@k1@1020"
+MYSQL_TCP_PORT=59006# NAO INSERIR ASPAS NEM DEIXAR ESPAÇOS ANTES DO COMENTARIO!!!!
+DB_PRINCIPAL_FILE=maodevakinha_wp.sql
+DB_SHORT_FILE=short_generic.sql
 
 
 
@@ -103,7 +103,7 @@ update-ports:
 	sleep 3
 
 #instalacao completa(único passo)
-fullinstall: helmapply deploydb
+fullinstall: update-ingress helmapply deploydb
 
 partinstall: copydataandcrawler
 
