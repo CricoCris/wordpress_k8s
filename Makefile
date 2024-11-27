@@ -103,7 +103,7 @@ update-ports:
 	sleep 3
 
 #instalacao completa(único passo)
-fullinstall: update-ingress helmapply copycrawler deploydb 
+fullinstall: helmapply copycrawler deploydb 
 
 partinstall: copydataandcrawler
 

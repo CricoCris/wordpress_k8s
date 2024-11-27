@@ -125,7 +125,7 @@ ofertasdamilli:
 Wordpress:
 	Site: ofertasdamilli.com.br
 	Admin: ofertasdamilli.com.br/wp-admin
-		User: mvakinha Pass: 4PvhW%#N*kdh3wa!jH
+		User: milli Pass: rz&wU$D*Des2)Yc$qi
 	Go: ofertasdamilli.com.br/go/admin/login.php
 
 Mysql:
@@ -150,12 +150,12 @@ tanodescontinho:
 Wordpress:
 	Site: tanodescontinho.com.br
 	Admin: tanodescontinho.com.br/wp-admin
-		User: mvakinha Pass: 4PvhW%#N*kdh3wa!jH
+		User: descontinho Pass: kJhwOpiyZTvgMfiuGI
 	Go: tanodescontinho.com.br/go/admin/login.php
 
 Mysql:
 
-	mysql.tanodescontinho.com.br porta 59007
+	mysql.tanodescontinho.com.br porta 59008
 
     Users:
 	    root: T@c0m@1020!
@@ -164,7 +164,7 @@ Mysql:
     database: tanodescontinho
 
 Ftp:
-	sftp.tanodescontinho.com.br porta 22027
+	sftp.tanodescontinho.com.br porta 22028
 
 	User: sftp  pass: T@c0m120
 
