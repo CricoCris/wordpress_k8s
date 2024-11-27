@@ -1,5 +1,5 @@
 namespace:
-  name: avisadesconto
+  name: achadasso
 
 hml:
   enabled: false
@@ -13,16 +13,19 @@ crawler:
 phpaMyAmin:
   enabled: true
 
+affinity:
+  label: site2
+
 wordpress:
   enabled: true
   name: wordpress
   image: wordpress:5.9-php7.4
   replicas: 1
   db:
-    host: "mysql-service-avisadesconto:59002"
+    host: "mysql-service-achadasso:59004"
     user: root
-    password: "avis4@1020!"
-    name: "avisadesconto"
+    password: "ach4da@1020!"
+    name: "achadasso_wp"
   ports:
     servicePort: 50001
     targetPort: 80
@@ -53,7 +56,7 @@ mysql:
   replicas: 1
   secretName: mysql-secret
   service:
-    port: 59002
+    port: 59004
     targetPort: 3306
   resources:
     requests:
@@ -67,8 +70,8 @@ mysql:
     size: 5Gi
     fsType: xfs  
   secrets:
-    MYSQL_ROOT_PASSWORD: YXZpczRAMTAyMCE=
-    MYSQL_DATABASE: YXZpc2FkZXNjb250bw==
-    MYSQL_USER: YXZpc2FkZXNjb250bw==
-    MYSQL_PASSWORD: YXZpczRAMTAyMEA=
-    MYSQL_TCP_PORT: NTkwMDI=
+    MYSQL_ROOT_PASSWORD: YWNoNGRhQDEwMjAh
+    MYSQL_DATABASE: YWNoYWRhc3NvX3dw
+    MYSQL_USER: YWNoYWRhc3Nv
+    MYSQL_PASSWORD: YWNoNEAxMDIwQA==
+    MYSQL_TCP_PORT: NTkwMDQ=

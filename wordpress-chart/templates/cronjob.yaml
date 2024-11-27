@@ -7,15 +7,26 @@ metadata:
   name: cronjob-crawler-pechinchou
   namespace: {{ .Values.namespace.name }}
 spec:
-  schedule: "*/30 * * * *" # A cada 10 minutos
+  schedule: "*/45 * * * *" # A cada 10 minutos
   jobTemplate:
     spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 1500 # 25 minutos
       template:
-        spec:          
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: {{ .Values.affinity.label }}
+                    operator: In
+                    values:
+                    - {{ .Values.namespace.name }}          
           containers:
           - name: crawler-container
             image: node:14-alpine            
-            command: ["sh", "-c", "node /crawler/pechinchou/src/index.js "]            
+            command: ["sh", "-c", "node /crawler/pechinchou/src/index.js 20"]            
             volumeMounts:
             - name: script-volume
               mountPath: /crawler
@@ -29,6 +40,7 @@ spec:
           - name: wordpress-volume
             persistentVolumeClaim:
               claimName: wordpress-pvc   # Substitua pelo nome do seu PVC
+  concurrencyPolicy: Forbid
 
 ---
 apiVersion: batch/v1
@@ -40,12 +52,23 @@ spec:
   schedule: "* 1 * * *" # A cada 30 minutos
   jobTemplate:
     spec:
+      backoffLimit: 2
+      activeDeadlineSeconds: 240 # 2 minutos
       template:
-        spec:          
+        spec:
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: {{ .Values.affinity.label }}
+                    operator: In
+                    values:
+                    - {{ .Values.namespace.name }}                
           containers:
           - name: crawler-container
             image: node:18-alpine            
-            command: ["sh", "-c", "node /crawler/promobit/index.js > /crawler/promobit/log/crawler-promobit.log 2>/crawler/promobit/log/crawler-promobit.error"]            
+            command: ["sh", "-c", "node /crawler/promobit/index.js"]            
             volumeMounts:
             - name: script-volume
               mountPath: /crawler
@@ -54,4 +77,5 @@ spec:
           - name: script-volume
             persistentVolumeClaim:
               claimName: crawler-pvc
+  concurrencyPolicy: Forbid
 {{- end }}

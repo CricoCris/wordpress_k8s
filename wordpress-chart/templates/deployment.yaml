@@ -13,6 +13,15 @@ spec:
       labels:
         app: wordpress-{{ .Values.namespace.name }}
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ .Values.affinity.label }}
+                operator: In
+                values:
+                - {{ .Values.namespace.name }}
       volumes:
         {{- if .Values.wordpress.persistentVolumes.enabled }}
         {{- range .Values.wordpress.persistentVolumes.volumes }}
@@ -84,6 +93,15 @@ spec:
       labels:
         app: sftp-{{ .Values.namespace.name }}
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: {{ .Values.affinity.label }}
+                operator: In
+                values:
+                - {{ .Values.namespace.name }}
       containers:
       - name: sftp-{{ .Values.namespace.name }}
         image: zhabba/sftp-arm64:latest

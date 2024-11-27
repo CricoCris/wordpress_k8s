@@ -1,7 +1,7 @@
 
 # Nome da aplicação e namespace(IMPORTANTE!!!!)
-APP_NAME=avisadesconto
-NAMESPACE=avisadesconto
+APP_NAME=achadasso
+NAMESPACE=achadasso
 
 #Se for testar como homologação primeiro(totalmente recomendado) true or false apenas. Cuidado com espaços! Habilitar teste servidor(true)
 ENABLE_HML=false
@@ -13,23 +13,24 @@ KEYDIR="~/.ssh/id_rsa"
 
 #wordpress
 LABELWP=app=wordpress-$(NAMESPACE)
-CONTENT_NAME=avisadesconto.tar.gz
-CONTENT_CRAWLER_NAME=crawlers.tar.gz
+CONTENT_NAME=achadasso.tar.gz
+CONTENT_CRAWLER_NAME=crawlers_descontador.tar.gz
 CONTENT_DIR=./data
 
-#ftp([USER]:[PASS][PERFIL])
-FTP_CREDENCIALS=sftp:@avisa1010:1000
-FTP_PORT=22023
+#ftp([USER]:[PASS][PERFIL]) Porta 22022 ate 22032 (22022 tabaratasso - 22023 avisadesconto - 22024 achadasso)
+FTP_CREDENCIALS=sftp:@acha1020:33
+FTP_PORT=22024
 
 #bancode dados
-#Obs: O de prefência não usar "#" na senha. Se for necessário colocar "\" antes do caractere(o "\" não fara parte da senha. Ex: ABC123\#$% --> a senha seria ABC123#$% ).
-MYSQL_ROOT_PASSWORD="avis4@1020!"
-MYSQL_DATABASE="avisadesconto"
-MYSQL_USER="avisadesconto"
-MYSQL_PASSWORD="avis4@1020@"
-MYSQL_TCP_PORT=59002# NAO INSERIR ASPAS NEM DEIXAR ESPAÇOS ANTES DO COMENTARIO!!!!
-DB_PRINCIPAL_FILE=mysql_avisaDesconto.sql
-DB_SHORT_FILE=short_avisadesconto.sql
+#Obs: O de prefência não usar "#" na senha. Se for necessário colocar "" antes do caractere(o "" não fara parte da senha. Ex: ABC123#$% --> a senha seria ABC123#$% ).
+MYSQL_ROOT_PASSWORD="ach4da@1020!"
+MYSQL_DATABASE="achadasso_wp"
+MYSQL_USER="achadasso"
+MYSQL_PASSWORD="ach4@1020@"
+MYSQL_TCP_PORT=59004# NAO INSERIR ASPAS NEM DEIXAR ESPAÇOS ANTES DO COMENTARIO!!!!
+DB_PRINCIPAL_FILE=achadasso_wp.sql
+DB_SHORT_FILE=short_achadasso.sql
+
 
 
 ####################################################
@@ -80,6 +81,9 @@ update-values:
 	sed -i '/db:/,/host:/s/\(host: \).*/\1"mysql-service-$(NAMESPACE):$(MYSQL_TCP_PORT)"/' wordpress-chart/values.yaml
 	sed -i '/^\(\s*port: \).*/s//\1$(MYSQL_TCP_PORT)/' wordpress-chart/values.yaml
 	sleep 3
+	@echo "Atualizando arquivo values.yaml com valores de ftp..."	
+	sed -i 's/\(sftp-credentials: *\).*/\1$(BASE64_FTP_CREDENCIALS)/' wordpress-chart/templates/secret.yaml
+	sleep 3
 
 update-ports:
 	@echo "Atualizando arquivo values.yaml com valores de ftp..."	
@@ -99,7 +103,7 @@ update-ports:
 	sleep 3
 
 #instalacao completa(único passo)
-fullinstall: update-ingress helmapply copydataandcrawler deploydb
+fullinstall: helmapply deploydb
 
 partinstall: copydataandcrawler
 
@@ -148,7 +152,7 @@ copydatafull: compress-tar copy-tar descompress-tar
 #comando para esperar 15 segundos que o wordpress esteja disponível e iniciar a cópia
 espera:
 	@echo "Aguardando 30 segundos para que o wordpress do pod $(PODWP) esteja disponível e iniciar a cópia..."
-	sleep 15
+	sleep 30
 
 getpod:
 	@echo "O nome do pod WordPress é: $(PODWP)"
@@ -214,18 +218,18 @@ deployinfra: deploymetricsServer deployingress deploycertmanager deployissuer
 
 conditional-db:
 	@if [ "$(ENABLE_HML)" = "true" ]; then \
-		kubectl exec -i mysql-0 -- mysql --user=root --port=$(MYSQL_TCP_PORT) --password=$(MYSQL_ROOT_PASSWORD) -e "USE $(MYSQL_DATABASE); UPDATE wp_options SET option_value = 'http://hml.$(NAMESPACE).com.br' WHERE option_name = 'siteurl'; UPDATE wp_options SET option_value = 'http://hml.$(NAMESPACE).com.br' WHERE option_name = 'home';"; \
+		kubectl exec -i mysql-statefullset-$(NAMESPACE)-0 -- mysql --user=root --port=$(MYSQL_TCP_PORT) --password=$(MYSQL_ROOT_PASSWORD) -e "USE $(MYSQL_DATABASE); UPDATE wp_options SET option_value = 'http://hml.$(NAMESPACE).com.br' WHERE option_name = 'siteurl'; UPDATE wp_options SET option_value = 'http://hml.$(NAMESPACE).com.br' WHERE option_name = 'home';"; \
 	fi
 
 createdbmainshort:	
 	kubectl -n $(NAMESPACE) exec -i mysql-statefullset-$(NAMESPACE)-0 -- mysql --user=root --port=$(MYSQL_TCP_PORT) --password=$(MYSQL_ROOT_PASSWORD) -e "CREATE DATABASE IF NOT EXISTS $(MYSQL_DATABASE);"
 	kubectl -n $(NAMESPACE) exec -i mysql-statefullset-$(NAMESPACE)-0 -- mysql --user=root --port=$(MYSQL_TCP_PORT) --password=$(MYSQL_ROOT_PASSWORD) -e "CREATE DATABASE IF NOT EXISTS short;"
-dumpdbmain: 
+dumpdbmain: createdbmainshort
 	kubectl -n $(NAMESPACE) exec -i mysql-statefullset-$(NAMESPACE)-0 -- mysql --user=root --port=$(MYSQL_TCP_PORT) --password=$(MYSQL_ROOT_PASSWORD) < $(CONTENT_DIR)/$(DB_PRINCIPAL_FILE)	
 dumpdbshort: 
 	kubectl -n $(NAMESPACE) exec -i mysql-statefullset-$(NAMESPACE)-0 -- mysql --user=root --port=$(MYSQL_TCP_PORT) --password=$(MYSQL_ROOT_PASSWORD) < $(CONTENT_DIR)/$(DB_SHORT_FILE)
 
-deploydb: createdbmainshort dumpdbmain dumpdbshort conditional-db
+deploydb: espera dumpdbshort
 
 
 

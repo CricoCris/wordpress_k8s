@@ -15,13 +15,15 @@ spec:
   {{- else }}
     - "{{ .Values.namespace.name }}.com.br"
   {{- end }}
+  {{- if not .Values.hml.enabled }}
+    - "www.{{ .Values.namespace.name }}.com.br
     secretName: "wordpress-tls-{{ .Values.namespace.name }}"
   rules:
       {{- if .Values.hml.enabled }}
     - host: "hml.{{ .Values.namespace.name }}.com.br"
       {{- else }}
-    - host: "{{ .Values.namespace.name }}.com.br"
-      {{- end }}
+    - host: "{{ .Values.namespace.name }}.com.br" 
+      {{- end }}     
       http:
         paths:
         - path: "/"
@@ -31,6 +33,19 @@ spec:
               name: wordpress-service-{{ .Values.namespace.name }}
               port:
                 number: {{ .Values.wordpress.ports.servicePort }}
+      {{- if not .Values.hml.enabled }}
+    - host: "www.{{ .Values.namespace.name }}.com.br"      
+      http:
+        paths:
+        - path: "/"
+          pathType: Prefix
+          backend:
+            service:
+              name: wordpress-service-{{ .Values.namespace.name }}
+              port:
+                number: {{ .Values.wordpress.ports.servicePort }}
+      {{- end }}
+    
 {{- end }}
 
 {{- if .Values.mysql.enabled }}

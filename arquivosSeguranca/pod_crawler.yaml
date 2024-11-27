@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: create-index-container
-    image: node:14-alpine  # Um contêiner leve que pode ser usado para criar arquivos   
+    image: node:18-alpine  # Um contêiner leve que pode ser usado para criar arquivos   
     command: ['sh', '-c', 'while true; do sleep 3600; done']  # Mantém o pod em execução
     volumeMounts:
     - name: script-volume

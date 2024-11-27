@@ -1,0 +1,102 @@
+Avisadesconto
+
+Wordpress:
+	Site: avisadesconto.com.br
+	Admin: avisadesconto.com.br/wp-admin
+	Go: avisadesconto.com.br/go/admin/login.php
+
+Mysql:
+
+	mysql.avisadesconto.com.br porta 59002 (uma das mudanças que fiz foi deixar em porta diferente)
+
+Users:
+	root: avis4@1020!
+	avisadesconto: avis4@1020@
+
+database: avisadesconto
+
+Ftp:
+	sftp.avisadesconto.com.br porta 22023
+	User: sftp  pass: @avisa1010
+
+#################
+
+
+tabaratasso:
+
+
+Wordpress:
+	Site: tabaratasso.com.br
+	Admin: tabaratasso.com.br/wp-admin
+	Go: tabaratasso.com.br/go/admin/login.php
+
+Mysql:
+
+	mysql.tabaratasso.com.br porta 59001
+
+    Users:
+	    root: agKHOwHA2k0ZAsl7LHd6MYzUIbBRDSvc
+	    userbaratasso: yzM7dIIh~MsL
+    
+    database: baratassodb
+
+
+Ftp:
+	sftp.tabaratasso.com.br porta 22022
+	User: sftp  pass: 9AeW9466S8wOot3u
+
+#################
+
+Descontador:
+
+Wordpress:
+	Site: descontador.com.br
+	Admin: descontador.com.br/wp-admin
+	Go: descontador.com.br/go/admin/login.php
+
+Mysql:
+
+	mysql.descontador.com.br porta 59005
+
+    Users:
+	    root: d3scont@dor@1020!
+	    descontador: d3scont@dor@1020@
+    
+    database: descontador_wordpress
+
+Ftp:
+	sftp.descontador.com.br porta 22025
+
+	User: sftp  pass: @acha1020
+
+#################
+
+achadasso:
+
+Wordpress:
+	Site: achadasso.com.br
+	Admin: achadasso.com.br/wp-admin
+	Go: achadasso.com.br/go/admin/login.php
+
+Mysql:
+
+	mysql.achadasso.com.br porta 59004
+
+    Users:
+	    root: ach4da@1020!
+	    achadasso: ach4@1020@
+    
+    database: achadasso_wp
+
+Ftp:
+	sftp.achadasso.com.br porta 22024
+
+	User: sftp  pass: @acha1020
+
+
+
+ 
+
+
+
+
