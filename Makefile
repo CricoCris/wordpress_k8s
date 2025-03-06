@@ -1,7 +1,7 @@
 
 # Nome da aplicação e namespace(IMPORTANTE!!!!)
-APP_NAME=tanodescontinho
-NAMESPACE=tanodescontinho
+APP_NAME=maiskibarato
+NAMESPACE=maiskibarato
 
 #Se for testar como homologação primeiro(totalmente recomendado) true or false apenas. Cuidado com espaços! Habilitar teste servidor(true)
 ENABLE_HML=false
@@ -13,22 +13,22 @@ KEYDIR="~/.ssh/id_rsa"
 
 #wordpress
 LABELWP=app=wordpress-$(NAMESPACE)
-CONTENT_NAME=tanodescontinho.tar.gz
+CONTENT_NAME=maiskibarato.tar.gz
 CONTENT_CRAWLER_NAME=crawlers_descontador.tar.gz
 CONTENT_DIR=../vagalume_dados/
 
-#ftp([USER]:[PASS][PERFIL]) Porta 22022 ate 22032 (22022 tabaratasso - 22023 avisadesconto - 22024 tanodescontinho)
+#ftp([USER]:[PASS][PERFIL]) Porta 22022 ate 22032 (22022 tabaratasso - 22023 avisadesconto - 22024 maiskibarato)
 FTP_CREDENCIALS=sftp:T@c0m120:33
-FTP_PORT=22028
+FTP_PORT=22029
 
 #bancode dados
 #Obs: O de prefência não usar "#" na senha. Se for necessário colocar "" antes do caractere(o "" não fara parte da senha. Ex: ABC123#$% --> a senha seria ABC123#$% ).
-MYSQL_ROOT_PASSWORD="T@c0m@1020!"
-MYSQL_DATABASE="tanodescontinho"
-MYSQL_USER="tanodescontinho"
-MYSQL_PASSWORD="T@c0m@1020"
-MYSQL_TCP_PORT=59008# NAO INSERIR ASPAS NEM DEIXAR ESPAÇOS ANTES DO COMENTARIO!!!!
-DB_PRINCIPAL_FILE=tanodescontinho_wp.sql
+MYSQL_ROOT_PASSWORD="ma1k1k@1020!"
+MYSQL_DATABASE="maiskibarato"
+MYSQL_USER="maiskibarato"
+MYSQL_PASSWORD="ma1sk@1020"
+MYSQL_TCP_PORT=59009# NAO INSERIR ASPAS NEM DEIXAR ESPAÇOS ANTES DO COMENTARIO!!!!
+DB_PRINCIPAL_FILE=maiskibarato_wp.sql
 DB_SHORT_FILE=short_generic.sql
 
 

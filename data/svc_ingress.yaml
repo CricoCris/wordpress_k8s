@@ -15,6 +15,16 @@ spec:
   - IPv4
   ports:        
   - appProtocol: "mysql"
+    name: "mysql-maiskibarato"
+    port: 59009
+    protocol: TCP
+    targetPort: 59009
+  - appProtocol: "sftp"
+    name: "sftp-maiskibarato"
+    port: 22029
+    protocol: TCP
+    targetPort: 22029
+  - appProtocol: "mysql"
     name: "mysql-tanodescontinho"
     port: 59008
     protocol: TCP

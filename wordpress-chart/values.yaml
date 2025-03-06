@@ -1,5 +1,5 @@
 namespace:
-  name: tanodescontinho
+  name: maiskibarato
 
 hml:
   enabled: false
@@ -14,7 +14,7 @@ phpaMyAmin:
   enabled: true
 
 affinity:
-  label: site3
+  label: site2
 
 wordpress:
   enabled: true
@@ -22,10 +22,10 @@ wordpress:
   image: wordpress:5.9-php7.4
   replicas: 1
   db:
-    host: "mysql-service-tanodescontinho:59008"
+    host: "mysql-service-maiskibarato:59009"
     user: root
-    password: "T@c0m@1020!"
-    name: "tanodescontinho"
+    password: "ma1k1k@1020!"
+    name: "maiskibarato"
   ports:
     servicePort: 50001
     targetPort: 80
@@ -56,7 +56,7 @@ mysql:
   replicas: 1
   secretName: mysql-secret
   service:
-    port: 59008
+    port: 59009
     targetPort: 3306
   resources:
     requests:
@@ -70,8 +70,8 @@ mysql:
     size: 5Gi
     fsType: xfs  
   secrets:
-    MYSQL_ROOT_PASSWORD: VEBjMG1AMTAyMCE=
-    MYSQL_DATABASE: dGFub2Rlc2NvbnRpbmhv
-    MYSQL_USER: dGFub2Rlc2NvbnRpbmhv
-    MYSQL_PASSWORD: VEBjMG1AMTAyMA==
-    MYSQL_TCP_PORT: NTkwMDg=
+    MYSQL_ROOT_PASSWORD: bWExazFrQDEwMjAh
+    MYSQL_DATABASE: bWFpc2tpYmFyYXRv
+    MYSQL_USER: bWFpc2tpYmFyYXRv
+    MYSQL_PASSWORD: bWExc2tAMTAyMA==
+    MYSQL_TCP_PORT: NTkwMDk=

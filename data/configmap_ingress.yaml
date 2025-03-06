@@ -17,4 +17,6 @@ data:
   "59007": ofertasdamilli/mysql-service-ofertasdamilli:59007  
   "22028": tanodescontinho/sftp-service-tanodescontinho:22
   "59008": tanodescontinho/mysql-service-tanodescontinho:59008
+  "22029": maiskibarato/sftp-service-maiskibarato:22
+  "59009": maiskibarato/mysql-service-maiskibarato:59009
   "59002": avisadesconto/mysql-service-avisadesconto:59002

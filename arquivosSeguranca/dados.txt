@@ -159,7 +159,7 @@ Mysql:
 
     Users:
 	    root: T@c0m@1020!
-	    tanodescontinho: T@c0m@1020
+	    tanodescontinho: T|:quit@c0m@1020
     
     database: tanodescontinho
 
